@@ -37,7 +37,7 @@ const App = (props) => {
 
       <h2>Anecdote with most votes</h2>
       <p>{props.anecdotes[maxVotes]}</p>
-      <p>has {votes[maxVotes]} {plural(points[selected], "vote")}</p>
+      <p>has {votes[maxVotes]} {plural(votes[selected], "vote")}</p>
     </div>
   )
 }
