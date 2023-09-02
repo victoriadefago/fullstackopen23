@@ -3,6 +3,7 @@ import axios from 'axios'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
+import Message from './components/Message'
 import personService from './services/persons'
 
 
@@ -11,6 +12,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ search, setSearch ] = useState('')
+  const [ message, setMessage ] = useState('')
 
   useEffect(() => {
     personService
@@ -20,6 +22,20 @@ const App = () => {
         console.log(err)
       })
   }, [])
+
+  const handleMessage = (message, type) => {
+    if(type !== 'error') {
+        setNewName('');
+        setNewNumber('');
+    }
+    setMessage({
+        message: message,
+        type: type
+    })
+    setTimeout(() => {
+        setMessage(null)
+    }, 5000)
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -38,11 +54,14 @@ const App = () => {
             setPersons(persons.map(pers => pers.id !== updatedPerson.id ? pers : updatedPerson))
             setNewName('')
             setNewNumber('')
+            handleMessage(`${updatedPerson.name} is already updated`, 'inform')
           })
-          .catch(err => console.log(err))
+          .catch(err => {
+            console.log(err)
+            handleMessage(`${err.message}. Information of ${person.name} has already been removed from server`, 'error')
+          })
       }
     } else {
-
       const newPerson = {
         name: newName,
         number: newNumber
@@ -53,9 +72,11 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          handleMessage(`Added ${returnedPerson.name}`, 'inform')
         })
         .catch(err => {
           console.log(err)
+          handleMessage(err.message, 'error')
         })
     }
   }
@@ -77,8 +98,12 @@ const App = () => {
         .remove(person.id)
         .then(() => {
           setPersons(persons.filter(pers => pers.id !== person.id))
+          handleMessage(`Deleted ${person.name}`, 'inform')
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          console.log(err)
+          handleMessage(`${err.message}. Information of ${person.name} has already been removed from server`, 'error')
+        })
     }
   }
 
@@ -86,6 +111,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Message message={message} />
       <h3>Search</h3>
       <Filter search={search} handleChange={handleChange}/>
       <h3>Add a new</h3>
