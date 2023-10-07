@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
@@ -58,7 +57,12 @@ const App = () => {
           })
           .catch(err => {
             console.log(err)
-            handleMessage(`${err.message}. Information of ${person.name} has already been removed from server`, 'error')
+            console.log(err.response.data.error)
+            if(err.name === 'ValidationError' || err.name === 'AxiosError'){
+              handleMessage(err.response.data.error, 'error')
+            } else {
+              handleMessage(`${err.message}. Information of ${person.name} has already been removed from server`, 'error')
+            }
           })
       }
     } else {
@@ -76,7 +80,12 @@ const App = () => {
         })
         .catch(err => {
           console.log(err)
+          console.log(err.response.data.error)
+          if(err.name === 'ValidationError' || err.name === 'AxiosError'){
+            handleMessage(err.response.data.error, 'error')
+          } else {
           handleMessage(err.message, 'error')
+          }
         })
     }
   }

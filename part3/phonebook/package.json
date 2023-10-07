@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../phonebook/ && npm run build && cp -r build ../phonebook",
     "deploy": "fly deploy",
@@ -24,6 +25,11 @@
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.4.9",
+    "eslint": "^8.51.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-n": "^16.1.0",
+    "eslint-plugin-promise": "^6.1.1",
     "nodemon": "^2.0.2"
   }
 }
